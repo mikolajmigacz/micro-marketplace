@@ -1,0 +1,30 @@
+{
+  "name": "micro-marketplace",
+  "version": "1.0.0",
+  "description": "Mikroserwisowy system marketplace z Node.js, NestJS, React i AWS",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "frontend"
+  ],
+  "scripts": {
+    "install:all": "pnpm install",
+    "dev": "concurrently \"pnpm --filter user-service dev\" \"pnpm --filter listing-service dev\" \"pnpm --filter notification-service dev\" \"pnpm --filter frontend dev\"",
+    "dev:backend": "concurrently \"pnpm --filter user-service dev\" \"pnpm --filter listing-service dev\" \"pnpm --filter notification-service dev\"",
+    "dev:frontend": "pnpm --filter frontend dev",
+    "build": "pnpm --filter user-service build && pnpm --filter listing-service build && pnpm --filter notification-service build && pnpm --filter frontend build",
+    "start:user": "pnpm --filter user-service start",
+    "start:listing": "pnpm --filter listing-service start",
+    "start:notification": "pnpm --filter notification-service start",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:logs": "docker-compose logs -f"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  }
+}
