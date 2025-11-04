@@ -17,10 +17,10 @@ export class JwtValidationService {
     private readonly configService: ConfigService,
     private readonly httpService: HttpService
   ) {
-    this.userServiceUrl = this.configService.get<string>(
-      'USER_SERVICE_URL',
-      'http://localhost:3001'
-    );
+    this.userServiceUrl = this.configService.get<string>('USER_SERVICE_URL');
+    if (!this.userServiceUrl) {
+      throw new Error('USER_SERVICE_URL environment variable is not set');
+    }
   }
 
   async validateToken(token: string): Promise<string> {
