@@ -27,16 +27,6 @@
       {
         "allow": ["warn", "error"]
       }
-    ],
-    "semi": ["error", "always"],
-    "quotes": [
-      "error",
-      "single",
-      {
-        "avoidEscape": true
-      }
-    ],
-    "comma-dangle": ["error", "es5"],
-    "indent": ["error", 2]
+    ]
   }
 }
