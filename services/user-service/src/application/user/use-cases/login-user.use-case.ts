@@ -12,10 +12,6 @@ import { IJwtService, JWT_SERVICE } from '../../../domain/user/services/jwt.serv
 import { LoginUserDto } from '../dto/login-user.dto';
 import { AuthResponseDto, UserResponseDto } from '../dto/user-response.dto';
 
-/**
- * Login User Use Case
- * Application layer - orchestrates the user login flow
- */
 @Injectable()
 export class LoginUserUseCase {
   constructor(
