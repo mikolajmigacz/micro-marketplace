@@ -36,7 +36,6 @@ export class User {
     return new User(props);
   }
 
-  // Getters
   get id(): UserId {
     return this.props.id;
   }
@@ -76,5 +75,34 @@ export class User {
       createdAt: this.createdAt.toISOString(),
       updatedAt: this.updatedAt.toISOString(),
     };
+  }
+
+  toDb() {
+    return {
+      id: this.id.getValue(),
+      email: this.email.getValue(),
+      hashedPassword: this.hashedPassword,
+      name: this.name,
+      createdAt: this.createdAt.toISOString(),
+      updatedAt: this.updatedAt.toISOString(),
+    };
+  }
+
+  static toDomain(data: {
+    id: string;
+    email: string;
+    hashedPassword: string;
+    name: string;
+    createdAt: string;
+    updatedAt: string;
+  }): User {
+    return User.reconstitute({
+      id: UserId.from(data.id),
+      email: Email.create(data.email),
+      hashedPassword: data.hashedPassword,
+      name: data.name,
+      createdAt: new Date(data.createdAt),
+      updatedAt: new Date(data.updatedAt),
+    });
   }
 }

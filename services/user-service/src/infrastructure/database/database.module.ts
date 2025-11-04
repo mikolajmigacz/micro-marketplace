@@ -11,12 +11,23 @@ export const DYNAMODB_CLIENT = 'DYNAMODB_CLIENT';
     {
       provide: DYNAMODB_CLIENT,
       useFactory: (configService: ConfigService) => {
+        const region = configService.get<string>('AWS_REGION');
+        const endpoint = configService.get<string>('AWS_ENDPOINT');
+        const accessKeyId = configService.get<string>('AWS_ACCESS_KEY_ID');
+        const secretAccessKey = configService.get<string>('AWS_SECRET_ACCESS_KEY');
+
+        if (!region || !endpoint || !accessKeyId || !secretAccessKey) {
+          throw new Error(
+            'Missing required AWS configuration: AWS_REGION, AWS_ENDPOINT, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY'
+          );
+        }
+
         const client = new DynamoDBClient({
-          region: configService.get<string>('AWS_REGION', 'us-east-1'),
-          endpoint: configService.get<string>('AWS_ENDPOINT', 'http://localhost:4566'),
+          region,
+          endpoint,
           credentials: {
-            accessKeyId: configService.get<string>('AWS_ACCESS_KEY_ID', 'test'),
-            secretAccessKey: configService.get<string>('AWS_SECRET_ACCESS_KEY', 'test'),
+            accessKeyId,
+            secretAccessKey,
           },
         });
 

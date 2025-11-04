@@ -6,8 +6,11 @@ import {
 import { User } from '../../../domain/user/entities/user.entity';
 import { Email } from '../../../domain/user/value-objects/email.vo';
 import { Password } from '../../../domain/user/value-objects/password.vo';
-import { IPasswordHasher, PASSWORD_HASHER } from '../services/password-hasher.interface';
-import { IJwtService, JWT_SERVICE } from '../services/jwt.service.interface';
+import {
+  IPasswordHasher,
+  PASSWORD_HASHER,
+} from '../../../domain/user/services/password-hasher.interface';
+import { IJwtService, JWT_SERVICE } from '../../../domain/user/services/jwt.service.interface';
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { AuthResponseDto, UserResponseDto } from '../dto/user-response.dto';
 
