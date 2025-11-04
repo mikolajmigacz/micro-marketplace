@@ -1,166 +1,117 @@
 # 🧠 Micro Marketplace
 
-Mikroserwisowy system marketplace oparty na **Node.js**, **NestJS**, **React** i **AWS**.
+A microservices-based REST system built with Node.js, NestJS, React, and AWS (with AI module).
 
-## 📋 Opis projektu
+## 🚀 Quick Start
 
-Micro Marketplace to aplikacja webowa typu Mini Marketplace / Task Board, gdzie użytkownicy mogą:
-
-- ✅ Zakładać konta i logować się (JWT)
-- ✅ Edytować swój profil
-- ✅ Tworzyć i przeglądać ogłoszenia
-- ✅ Otrzymywać powiadomienia o nowych zdarzeniach
-
-## 🏗️ Architektura
-
-System składa się z:
-
-### Backend (Mikroserwisy)
-- **User Service** (port 3001) - zarządzanie użytkownikami i autoryzacją JWT
-- **Listing Service** (port 3002) - zarządzanie ogłoszeniami
-- **Notification Service** (port 3003) - przetwarzanie zdarzeń z kolejki SQS
-
-### Frontend
-- **React + Vite + TailwindCSS** (port 5173) - interfejs użytkownika
-
-### Infrastruktura lokalna
-- **LocalStack** - emulacja AWS (DynamoDB, SQS, SNS)
-- **DynamoDB Admin** (port 8001) - interfejs do przeglądania tabel
-
-## 🚀 Szybki start
-
-### Wymagania
-
-- **Node.js** >= 18.0.0
-- **pnpm** >= 8.0.0
-- **Docker** + **Docker Compose**
-
-### Instalacja
+Clone the repository and run locally:
 
 ```bash
-# Klonowanie repozytorium
-git clone <repo-url>
+git clone https://github.com/mikolajmigacz/micro-marketplace.git
 cd micro-marketplace
-
-# Instalacja zależności
 pnpm install
-
-# Kopiowanie pliku .env
 cp .env.example .env
-
-# Uruchomienie infrastruktury (LocalStack)
 pnpm docker:up
-
-# Uruchomienie wszystkich serwisów
 pnpm dev
 ```
 
-### Dostępne endpointy
-
-- Frontend: http://localhost:5173
-- User Service: http://localhost:3001
-- Listing Service: http://localhost:3002
-- Notification Service: http://localhost:3003
-- DynamoDB Admin: http://localhost:8001
-- LocalStack: http://localhost:4566
-
-## 📦 Dostępne skrypty
+Other useful scripts:
 
 ```bash
-# Instalacja wszystkich zależności
-pnpm install
-
-# Uruchomienie wszystkich serwisów (backend + frontend)
-pnpm dev
-
-# Uruchomienie tylko backendu
 pnpm dev:backend
-
-# Uruchomienie tylko frontendu
 pnpm dev:frontend
-
-# Build wszystkich serwisów
 pnpm build
-
-# Uruchomienie konkretnego serwisu
 pnpm start:user
 pnpm start:listing
 pnpm start:notification
-
-# Docker
-pnpm docker:up      # Uruchomienie LocalStack
-pnpm docker:down    # Zatrzymanie LocalStack
-pnpm docker:logs    # Wyświetlenie logów
+pnpm docker:down
+pnpm docker:logs
 ```
 
-## 🗂️ Struktura projektu
+A microservices-based REST system built with Node.js, NestJS, React, and AWS (with AI module).
 
-```
+## 🎯 Project Overview
+
+Micro Marketplace is a web app where users can:
+
+- Register and manage accounts
+- Log in and edit profiles
+- Create and browse listings (tasks, products)
+- Receive notifications about new events
+- Get smart AI advice when searching or posting listings
+
+The project demonstrates full-stack skills: backend (Node.js, NestJS, microservices, REST, AWS, AI API) and frontend (React). Runs locally (Docker Compose) or deploys to AWS Free Tier.
+
+## 🧩 System Architecture
+
+**Microservices:**
+
+- **User Service:** User management, authentication (JWT), profile
+- **Listing Service:** Listings CRUD, integrates with AI Recommendation
+- **Notification Service:** Event processing, notifications (SQS)
+- **AI Recommendation Service:** Generates short AI tips for users
+- **Frontend (React):** User interface
+
+**AWS Components:**
+
+- Lambda, API Gateway, DynamoDB, SQS, S3, CloudFront, CloudWatch, Bedrock/OpenAI API
+
+## ⚙️ Key Features
+
+- Microservices architecture (4 backend services + React frontend)
+- AI integration (smart tips for listings)
+- Event-driven communication (SQS)
+- Serverless & AWS Free Tier friendly
+- Docker Compose for local development
+
+## 🗂️ Project Structure
+
+```text
 micro-marketplace/
 ├── services/
-│   ├── user-service/          # NestJS + JWT + DynamoDB
-│   ├── listing-service/       # NestJS + SQS publisher + DynamoDB
-│   └── notification-service/  # NestJS + SQS consumer
-├── frontend/                  # React + Vite + TailwindCSS
-├── docker-compose.yml         # LocalStack + DynamoDB
-├── pnpm-workspace.yaml        # Konfiguracja monorepo
-└── package.json               # Root package.json
+│   ├── user-service/            # NestJS + REST + JWT + DynamoDB
+│   ├── listing-service/         # NestJS + REST + SQS publisher + AI call
+│   ├── notification-service/    # Node.js + SQS consumer
+│   └── ai-recommendation-service/ # NestJS + REST + AI API integration
+├── frontend/                    # React + Tailwind + Vite + Axios
+├── docker-compose.yml           # Local dev & testing
+└── README.md
 ```
 
-## 🔗 Komunikacja między serwisami
+## ☁️ AWS Deployment Plan
 
-- **Frontend → Listing Service** - REST API (pobieranie i tworzenie ogłoszeń)
-- **Frontend → User Service** - REST API (rejestracja i logowanie)
-- **Listing Service → User Service** - REST API (weryfikacja tokena JWT)
-- **Listing Service → Notification Service** - Asynchroniczna (SQS event)
+- **Lambda:** All microservices
+- **API Gateway:** REST API
+- **DynamoDB:** Users, Listings
+- **SQS:** Event queue
+- **S3 + CloudFront:** Frontend hosting
+- **CloudWatch:** Logs & monitoring
+- **Bedrock/OpenAI API:** AI tips (low usage, pay-per-token)
 
-## 🛠️ Technologie
+## 🔗 Service Communication
 
-### Backend
-- Node.js, NestJS, TypeScript
-- JWT, bcrypt
-- AWS SDK (DynamoDB, SQS, SNS)
-- class-validator, class-transformer
+| From         | To                   | Type        | Purpose                |
+| ------------ | -------------------- | ----------- | ---------------------- |
+| Frontend     | Listing/User Service | REST        | Listings, auth         |
+| Listing      | User Service         | REST        | JWT validation         |
+| Listing      | Notification Service | SQS (async) | New listing events     |
+| Listing      | AI Recommendation    | REST        | Get AI advice          |
+| Notification | CloudWatch/SNS       | Event       | Logging, notifications |
 
-### Frontend
-- React, TypeScript
-- Vite
-- TailwindCSS
-- React Router
-- Axios
+## 📝 Roadmap / Plans
 
-### Infrastruktura
-- Docker, Docker Compose
-- LocalStack (emulacja AWS)
-- DynamoDB Local
-- SQS, SNS
+- User authentication (JWT)
+- Listings CRUD
+- SQS event integration
+- Notification Service
+- AI Recommendation integration
+- Unit & integration tests
+- CI/CD (GitHub Actions)
+- AWS deployment (Serverless)
+- API documentation (Swagger)
 
-## ☁️ Deployment na AWS
+---
 
-Projekt jest przygotowany do wdrożenia na AWS Free Tier:
+**Author:** Mikołaj Migacz
 
-- **AWS Lambda** - hosting mikroserwisów
-- **API Gateway** - publiczne REST API
-- **DynamoDB** - baza danych NoSQL
-- **SQS** - kolejka komunikatów
-- **S3 + CloudFront** - hosting frontendu
-- **CloudWatch** - logi i monitoring
-
-## 📝 TODO / Roadmap
-
-- [ ] Implementacja modułu Auth (rejestracja, logowanie, JWT)
-- [ ] Implementacja CRUD dla ogłoszeń
-- [ ] Integracja z SQS dla eventów
-- [ ] Implementacja Notification Service
-- [ ] Dodanie testów jednostkowych i integracyjnych
-- [ ] Konfiguracja CI/CD (GitHub Actions)
-- [ ] Deployment na AWS (Serverless Framework / AWS SAM)
-- [ ] Dodanie dokumentacji API (Swagger)
-
-## 📄 Licencja
-
-MIT
-
-## 👨‍💻 Autor
-
-Mikołaj Migacz - projekt portfolio
+MIT License
