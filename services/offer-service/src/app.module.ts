@@ -1,15 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { HttpModule } from '@nestjs/axios';
+import { DatabaseModule } from './infrastructure/database/database.module';
+import { OffersModule } from './ui/offer/modules/offers.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    HttpModule,
+    DatabaseModule,
+    OffersModule,
   ],
-  controllers: [],
-  providers: [],
 })
 export class AppModule {}

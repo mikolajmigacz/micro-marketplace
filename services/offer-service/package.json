@@ -1,7 +1,7 @@
 {
-  "name": "listing-service",
+  "name": "offer-service",
   "version": "1.0.0",
-  "description": "Listing Service - zarządzanie ogłoszeniami",
+  "description": "Offer Service - zarządzanie ofertami",
   "main": "dist/main.js",
   "scripts": {
     "build": "nest build",
@@ -10,7 +10,8 @@
     "dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "eslint \"{src,test}/**/*.ts\" --fix",
+    "lint:check": "eslint \"{src,test}/**/*.ts\"",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage"
