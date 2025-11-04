@@ -22,7 +22,7 @@ pnpm dev:backend
 pnpm dev:frontend
 pnpm build
 pnpm start:user
-pnpm start:listing
+pnpm start:offer
 pnpm start:notification
 pnpm docker:down
 pnpm docker:logs
@@ -36,9 +36,9 @@ Micro Marketplace is a web app where users can:
 
 - Register and manage accounts
 - Log in and edit profiles
-- Create and browse listings (tasks, products)
+- Create and browse offers (tasks, products)
 - Receive notifications about new events
-- Get smart AI advice when searching or posting listings
+- Get smart AI advice when searching or posting offers
 
 The project demonstrates full-stack skills: backend (Node.js, NestJS, microservices, REST, AWS, AI API) and frontend (React). Runs locally (Docker Compose) or deploys to AWS Free Tier.
 
@@ -47,7 +47,7 @@ The project demonstrates full-stack skills: backend (Node.js, NestJS, microservi
 **Microservices:**
 
 - **User Service:** User management, authentication (JWT), profile
-- **Listing Service:** Listings CRUD, integrates with AI Recommendation
+- **Offer Service:** Offers CRUD, integrates with AI Recommendation
 - **Notification Service:** Event processing, notifications (SQS)
 - **AI Recommendation Service:** Generates short AI tips for users
 - **Frontend (React):** User interface
@@ -70,7 +70,7 @@ The project demonstrates full-stack skills: backend (Node.js, NestJS, microservi
 micro-marketplace/
 ├── services/
 │   ├── user-service/            # NestJS + REST + JWT + DynamoDB
-│   ├── listing-service/         # NestJS + REST + SQS publisher + AI call
+│   ├── offer-service/           # NestJS + REST + SQS publisher + AI call
 │   ├── notification-service/    # Node.js + SQS consumer
 │   └── ai-recommendation-service/ # NestJS + REST + AI API integration
 ├── frontend/                    # React + Tailwind + Vite + Axios
@@ -82,7 +82,7 @@ micro-marketplace/
 
 - **Lambda:** All microservices
 - **API Gateway:** REST API
-- **DynamoDB:** Users, Listings
+- **DynamoDB:** Users, Offers
 - **SQS:** Event queue
 - **S3 + CloudFront:** Frontend hosting
 - **CloudWatch:** Logs & monitoring
@@ -92,16 +92,16 @@ micro-marketplace/
 
 | From         | To                   | Type        | Purpose                |
 | ------------ | -------------------- | ----------- | ---------------------- |
-| Frontend     | Listing/User Service | REST        | Listings, auth         |
-| Listing      | User Service         | REST        | JWT validation         |
-| Listing      | Notification Service | SQS (async) | New listing events     |
-| Listing      | AI Recommendation    | REST        | Get AI advice          |
+| Frontend     | Offer/User Service   | REST        | Offers, auth           |
+| Offer        | User Service         | REST        | JWT validation         |
+| Offer        | Notification Service | SQS (async) | New offer events       |
+| Offer        | AI Recommendation    | REST        | Get AI advice          |
 | Notification | CloudWatch/SNS       | Event       | Logging, notifications |
 
 ## 📝 Roadmap / Plans
 
 - User authentication (JWT)
-- Listings CRUD
+- Offers CRUD
 - SQS event integration
 - Notification Service
 - AI Recommendation integration

@@ -4,14 +4,12 @@ import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
-  
+
   const port = process.env.PORT || 3002;
   await app.listen(port);
-  
-  console.log(`🚀 Listing Service running on http://localhost:${port}`);
 }
 
 bootstrap();
