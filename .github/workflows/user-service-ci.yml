@@ -15,64 +15,30 @@ jobs:
   build-and-test:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
       - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 18.x
 
       - name: Install pnpm
         uses: pnpm/action-setup@v2
         with:
           version: 8
 
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        shell: bash
-        run: |
-          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
-
       - name: Install dependencies
-        run: |
-          pnpm install --force
+        run: pnpm install
 
-      - name: Lint code
+      - name: Lint
         working-directory: services/user-service
         run: npm run lint:check
 
-      - name: Build user-service
+      - name: Build
         working-directory: services/user-service
         run: npm run build
 
-      - name: Run tests
+      - name: Test
         working-directory: services/user-service
-        run: npm test -- --coverage --ci
-
-      - name: Upload coverage reports
-        if: always()
-        uses: codecov/codecov-action@v3
-        with:
-          files: ./services/user-service/coverage/coverage-final.json
-          flags: user-service
-          name: user-service-coverage
-
-      - name: Test Summary
-        if: always()
-        run: |
-          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Build successful" >> $GITHUB_STEP_SUMMARY
-          echo "✅ All tests passed" >> $GITHUB_STEP_SUMMARY
+        run: npm test -- --coverage
