@@ -9,13 +9,14 @@
   ],
   "scripts": {
     "install:all": "pnpm install",
-    "dev": "concurrently \"pnpm --filter user-service dev\" \"pnpm --filter listing-service dev\" \"pnpm --filter notification-service dev\" \"pnpm --filter frontend dev\"",
-    "dev:backend": "concurrently \"pnpm --filter user-service dev\" \"pnpm --filter listing-service dev\" \"pnpm --filter notification-service dev\"",
+    "dev": "concurrently \"pnpm --filter user-service dev\" \"pnpm --filter listing-service dev\" \"pnpm --filter notification-service dev\" \"pnpm --filter ai-recommendation-service dev\" \"pnpm --filter frontend dev\"",
+    "dev:backend": "concurrently \"pnpm --filter user-service dev\" \"pnpm --filter listing-service dev\" \"pnpm --filter notification-service dev\" \"pnpm --filter ai-recommendation-service dev\"",
     "dev:frontend": "pnpm --filter frontend dev",
-    "build": "pnpm --filter user-service build && pnpm --filter listing-service build && pnpm --filter notification-service build && pnpm --filter frontend build",
+    "build": "pnpm --filter user-service build && pnpm --filter listing-service build && pnpm --filter notification-service build && pnpm --filter ai-recommendation-service build && pnpm --filter frontend build",
     "start:user": "pnpm --filter user-service start",
     "start:listing": "pnpm --filter listing-service start",
     "start:notification": "pnpm --filter notification-service start",
+    "start:ai": "pnpm --filter ai-recommendation-service start",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "docker:logs": "docker-compose logs -f"
