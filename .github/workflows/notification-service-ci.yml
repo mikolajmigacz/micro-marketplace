@@ -1,0 +1,84 @@
+name: Notification Service CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'services/notification-service/**'
+      - '.github/workflows/notification-service-ci.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'services/notification-service/**'
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    services:
+      localstack:
+        image: localstack/localstack:latest
+        env:
+          SERVICES: sqs
+          AWS_DEFAULT_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+        ports:
+          - 4566:4566
+        options: >-
+          --health-cmd "awslocal sqs list-queues || exit 1"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install AWS CLI
+        run: |
+          pip install awscli-local
+
+      - name: Setup SQS Queue
+        env:
+          AWS_ENDPOINT: http://localhost:4566
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+        run: |
+          awslocal sqs create-queue --queue-name offer-events || true
+          awslocal sqs list-queues
+
+      - name: Lint
+        working-directory: services/notification-service
+        run: npm run lint
+
+      - name: Build
+        working-directory: services/notification-service
+        run: npm run build
+
+      - name: Unit Tests
+        working-directory: services/notification-service
+        run: npm test -- --testPathIgnorePatterns=integration.spec.ts --coverage
+
+      - name: Integration Tests
+        working-directory: services/notification-service
+        env:
+          AWS_ENDPOINT: http://localhost:4566
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          SQS_QUEUE_URL: http://localhost:4566/000000000000/offer-events
+        run: npm test -- integration.spec.ts --verbose
