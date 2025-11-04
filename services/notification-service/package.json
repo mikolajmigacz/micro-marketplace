@@ -1,7 +1,8 @@
 {
   "name": "notification-service",
   "version": "1.0.0",
-  "description": "Notification Service - przetwarzanie zdarzeń z SQS",
+  "description": "Notification Service - przetwarzania zdarzeń z SQS",
+  "type": "module",
   "main": "dist/main.js",
   "scripts": {
     "build": "tsc",
