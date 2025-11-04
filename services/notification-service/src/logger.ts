@@ -1,8 +1,3 @@
-/**
- * CloudWatch Logger Service (Mock)
- * Lokalno loguje do console, dla produkcji można rozszerzyć o CloudWatch
- */
-
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
 export class Logger {

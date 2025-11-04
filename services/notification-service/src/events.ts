@@ -1,7 +1,3 @@
-/**
- * Event types and interfaces
- */
-
 export interface OfferCreatedEvent {
   offerId: string;
   ownerId: string;

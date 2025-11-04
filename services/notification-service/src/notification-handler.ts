@@ -1,8 +1,3 @@
-/**
- * Notification Handler
- * Obsługuje różne typy zdarzeń i wysyła powiadomienia
- */
-
 import { Logger } from './logger';
 import { OfferCreatedEvent, Event } from './events';
 
@@ -13,9 +8,6 @@ export class NotificationHandler {
     this.logger = logger;
   }
 
-  /**
-   * Obsługuje zdarzenie OfferCreated
-   */
   async handleOfferCreated(event: OfferCreatedEvent): Promise<void> {
     this.logger.info('📧 Handling OfferCreated event', {
       offerId: event.offerId,
@@ -25,7 +17,6 @@ export class NotificationHandler {
     });
 
     try {
-      // Wysyłanie powiadomienia (mock email)
       await this.sendEmail(
         `user_${event.ownerId}@example.com`,
         `Your offer "${event.title}" was created successfully!`,
@@ -46,16 +37,11 @@ export class NotificationHandler {
     }
   }
 
-  /**
-   * Mock email sender
-   * W produkcji - nodemailer, SendGrid, SES, itp.
-   */
   private async sendEmail(
     recipient: string,
     subject: string,
     data: Record<string, any>
   ): Promise<void> {
-    // Simulate email sending delay
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     this.logger.info('📮 Mock Email Sent', {
@@ -63,16 +49,9 @@ export class NotificationHandler {
       subject,
       data,
     });
-
-    // W produkcji:
-    // return await this.emailService.send({ to: recipient, subject, html: template })
   }
 
-  /**
-   * Route events do odpowiednich handlerów
-   */
   async handle(event: Event): Promise<void> {
-    // Sprawdzanie typu eventu po polach
     if (this.isOfferCreatedEvent(event)) {
       await this.handleOfferCreated(event);
     } else {

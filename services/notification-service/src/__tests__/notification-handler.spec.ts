@@ -9,14 +9,18 @@ import { OfferCreatedEvent } from '../events';
 describe('NotificationHandler', () => {
   let handler: NotificationHandler;
   let loggerSpy: jest.SpyInstance;
+  let warnSpy: jest.SpyInstance;
 
   beforeEach(() => {
     const logger = new Logger('NotificationHandler', 'info');
     handler = new NotificationHandler(logger);
-    loggerSpy = jest.spyOn(console, 'log').mockImplementation();
+    loggerSpy = jest.spyOn(console, 'log');
+    warnSpy = jest.spyOn(console, 'warn');
   });
 
   afterEach(() => {
+    loggerSpy.mockClear();
+    warnSpy.mockClear();
     jest.restoreAllMocks();
   });
 
@@ -51,7 +55,7 @@ describe('NotificationHandler', () => {
 
       const logOutput = loggerSpy.mock.calls.join('\n');
       expect(logOutput).toContain('Mock Email Sent');
-      expect(logOutput).toContain('user_111@example.com');
+      expect(logOutput).toContain('user_user-111@example.com');
     });
   });
 
@@ -72,14 +76,15 @@ describe('NotificationHandler', () => {
     });
 
     it('should log warning for unknown event type', async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const unknownEvent: any = {
         someField: 'value',
       };
 
       await handler.handle(unknownEvent);
 
-      const logOutput = loggerSpy.mock.calls.join('\n');
-      expect(logOutput).toContain('Unknown event type');
+      const warnOutput = warnSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+      expect(warnOutput).toContain('Unknown event type');
     });
   });
 });

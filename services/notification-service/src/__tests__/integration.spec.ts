@@ -1,11 +1,17 @@
 /**
  * Integration Test: SQS → Notification Service
- * 
+ *
  * Prerequisites: LocalStack running with SQS queue
  * Run: docker-compose up -d localstack aws-init
  */
 
-import { SQSClient, SendMessageCommand, ReceiveMessageCommand, DeleteMessageCommand } from '@aws-sdk/client-sqs';
+import {
+  SQSClient,
+  SendMessageCommand,
+  ReceiveMessageCommand,
+  DeleteMessageCommand,
+  PurgeQueueCommand,
+} from '@aws-sdk/client-sqs';
 import { NotificationHandler } from '../notification-handler';
 import { Logger } from '../logger';
 import { OfferCreatedEvent } from '../events';
@@ -15,6 +21,8 @@ describe('Integration: SQS → Notification Service', () => {
   let handler: NotificationHandler;
   const queueUrl = process.env.SQS_QUEUE_URL || 'http://localhost:4566/000000000000/offer-events';
   let loggerSpy: jest.SpyInstance;
+  let warnSpy: jest.SpyInstance;
+  let errorSpy: jest.SpyInstance;
 
   beforeAll(() => {
     sqsClient = new SQSClient({
@@ -30,11 +38,26 @@ describe('Integration: SQS → Notification Service', () => {
     handler = new NotificationHandler(logger);
   });
 
-  beforeEach(() => {
-    loggerSpy = jest.spyOn(console, 'log').mockImplementation();
+  beforeEach(async () => {
+    loggerSpy = jest.spyOn(console, 'log');
+    warnSpy = jest.spyOn(console, 'warn');
+    errorSpy = jest.spyOn(console, 'error');
+
+    // Purge queue before each test
+    try {
+      const purgeCmd = new PurgeQueueCommand({ QueueUrl: queueUrl });
+      await sqsClient.send(purgeCmd);
+      // Wait for purge to complete
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    } catch (err) {
+      // Ignore errors if queue doesn't exist yet
+    }
   });
 
   afterEach(() => {
+    loggerSpy.mockClear();
+    warnSpy.mockClear();
+    errorSpy.mockClear();
     jest.restoreAllMocks();
   });
 
@@ -64,7 +87,7 @@ describe('Integration: SQS → Notification Service', () => {
       expect(sendResult.MessageId).toBeDefined();
 
       // 2. Receive message from SQS (simulating Consumer)
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const receiveCommand = new ReceiveMessageCommand({
         QueueUrl: queueUrl,
@@ -124,7 +147,7 @@ describe('Integration: SQS → Notification Service', () => {
         await sqsClient.send(cmd);
       }
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       // Process events
       for (let i = 0; i < events.length; i++) {
@@ -168,7 +191,7 @@ describe('Integration: SQS → Notification Service', () => {
       });
 
       await sqsClient.send(cmd);
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
       const receiveCommand = new ReceiveMessageCommand({
         QueueUrl: queueUrl,
@@ -183,8 +206,8 @@ describe('Integration: SQS → Notification Service', () => {
 
         await handler.handle(evt);
 
-        const logOutput = loggerSpy.mock.calls.join('\n');
-        expect(logOutput).toContain('Unknown event type');
+        const warnOutput = warnSpy.mock.calls.map((call) => call.join(' ')).join('\n');
+        expect(warnOutput).toContain('Unknown event type');
 
         // Clean up
         const deleteCmd = new DeleteMessageCommand({
@@ -196,4 +219,3 @@ describe('Integration: SQS → Notification Service', () => {
     }, 15000);
   });
 });
-

@@ -1,19 +1,13 @@
-// Load environment variables from .env file
-require('dotenv').config();
+import 'dotenv/config';
 
 import { Logger } from './logger';
 import { SQSConsumer } from './sqs-consumer';
 
 const logger = new Logger('NotificationService');
 
-/**
- * Notification Service - SQS Consumer Worker
- * Nasłuchuje zdarzeń z SQS i przetwarza powiadomienia
- */
 async function bootstrap(): Promise<void> {
   logger.info('🚀 Starting Notification Service Worker');
 
-  // Validate environment variables
   const requiredEnvVars = [
     'AWS_REGION',
     'AWS_ENDPOINT',
@@ -24,12 +18,14 @@ async function bootstrap(): Promise<void> {
 
   for (const envVar of requiredEnvVars) {
     if (!process.env[envVar]) {
-      logger.error(`Missing required environment variable: ${envVar}`, new Error(`${envVar} is required`));
+      logger.error(
+        `Missing required environment variable: ${envVar}`,
+        new Error(`${envVar} is required`)
+      );
       process.exit(1);
     }
   }
 
-  // Initialize SQS Consumer
   const consumer = new SQSConsumer({
     region: process.env.AWS_REGION!,
     endpoint: process.env.AWS_ENDPOINT!,
@@ -41,7 +37,6 @@ async function bootstrap(): Promise<void> {
     pollIntervalMs: parseInt(process.env.POLL_INTERVAL_MS || '5000'),
   });
 
-  // Handle graceful shutdown
   process.on('SIGINT', () => {
     logger.info('Received SIGINT signal, shutting down gracefully...');
     consumer.stop();
@@ -54,7 +49,6 @@ async function bootstrap(): Promise<void> {
     process.exit(0);
   });
 
-  // Start the consumer
   try {
     await consumer.start();
   } catch (error) {
