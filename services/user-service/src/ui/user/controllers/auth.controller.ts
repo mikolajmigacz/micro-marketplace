@@ -5,7 +5,7 @@ import { RegisterUserDto } from '../../../application/user/dto/register-user.dto
 import { LoginUserDto } from '../../../application/user/dto/login-user.dto';
 import { AuthResponseDto } from '../../../application/user/dto/user-response.dto';
 import { Inject } from '@nestjs/common';
-import { IJwtService, JWT_SERVICE } from '../../../application/user/services/jwt.service.interface';
+import { IJwtService, JWT_SERVICE } from '../../../domain/user/services/jwt.service.interface';
 
 @Controller('auth')
 export class AuthController {

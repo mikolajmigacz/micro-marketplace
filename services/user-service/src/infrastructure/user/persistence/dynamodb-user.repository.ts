@@ -8,15 +8,6 @@ import { Email } from '../../../domain/user/value-objects/email.vo';
 import { UserId } from '../../../domain/user/value-objects/user-id.vo';
 import { DYNAMODB_CLIENT } from '../../database/database.module';
 
-interface UserPersistence {
-  id: string;
-  email: string;
-  hashedPassword: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
 @Injectable()
 export class DynamoDBUserRepository extends UserRepository {
   private readonly tableName: string;
@@ -31,19 +22,10 @@ export class DynamoDBUserRepository extends UserRepository {
   }
 
   async save(user: User): Promise<void> {
-    const data: UserPersistence = {
-      id: user.id.getValue(),
-      email: user.email.getValue(),
-      hashedPassword: user.hashedPassword,
-      name: user.name,
-      createdAt: user.createdAt.toISOString(),
-      updatedAt: user.updatedAt.toISOString(),
-    };
-
     await this.dynamoDb.send(
       new PutCommand({
         TableName: this.tableName,
-        Item: data,
+        Item: user.toDb(),
       })
     );
   }
@@ -63,7 +45,7 @@ export class DynamoDBUserRepository extends UserRepository {
       return null;
     }
 
-    return this.toDomain(result.Items[0] as UserPersistence);
+    return User.toDomain(result.Items[0] as any);
   }
 
   async findById(id: UserId): Promise<User | null> {
@@ -78,17 +60,6 @@ export class DynamoDBUserRepository extends UserRepository {
       return null;
     }
 
-    return this.toDomain(result.Item as UserPersistence);
-  }
-
-  private toDomain(data: UserPersistence): User {
-    return User.reconstitute({
-      id: UserId.from(data.id),
-      email: Email.create(data.email),
-      hashedPassword: data.hashedPassword,
-      name: data.name,
-      createdAt: new Date(data.createdAt),
-      updatedAt: new Date(data.updatedAt),
-    });
+    return User.toDomain(result.Item as any);
   }
 }

@@ -8,9 +8,9 @@ import { LoginUserUseCase } from '../../application/user/use-cases/login-user.us
 import { JwtStrategy } from './guards/jwt.strategy';
 import { USER_REPOSITORY } from '../../domain/user/repositories/user.repository.interface';
 import { DynamoDBUserRepository } from '../../infrastructure/user/persistence/dynamodb-user.repository';
-import { PASSWORD_HASHER } from '../../application/user/services/password-hasher.interface';
+import { PASSWORD_HASHER } from '../../domain/user/services/password-hasher.interface';
 import { BcryptPasswordHasher } from '../../infrastructure/user/security/bcrypt-password-hasher.service';
-import { JWT_SERVICE } from '../../application/user/services/jwt.service.interface';
+import { JWT_SERVICE } from '../../domain/user/services/jwt.service.interface';
 import { JwtServiceImpl } from '../../infrastructure/user/security/jwt.service';
 
 @Module({

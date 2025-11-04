@@ -4,8 +4,11 @@ import {
   USER_REPOSITORY,
 } from '../../../domain/user/repositories/user.repository.interface';
 import { Email } from '../../../domain/user/value-objects/email.vo';
-import { IPasswordHasher, PASSWORD_HASHER } from '../services/password-hasher.interface';
-import { IJwtService, JWT_SERVICE } from '../services/jwt.service.interface';
+import {
+  IPasswordHasher,
+  PASSWORD_HASHER,
+} from '../../../domain/user/services/password-hasher.interface';
+import { IJwtService, JWT_SERVICE } from '../../../domain/user/services/jwt.service.interface';
 import { LoginUserDto } from '../dto/login-user.dto';
 import { AuthResponseDto, UserResponseDto } from '../dto/user-response.dto';
 
