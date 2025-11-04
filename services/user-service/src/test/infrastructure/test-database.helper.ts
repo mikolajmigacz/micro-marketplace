@@ -1,5 +1,5 @@
 export class TestDatabaseHelper {
-  private static store: Map<string, Map<string, any>> = new Map();
+  private static store: Map<string, Map<string, Record<string, unknown>>> = new Map();
 
   static reset(): void {
     this.store.clear();
@@ -11,24 +11,28 @@ export class TestDatabaseHelper {
     }
   }
 
-  static getTable(tableName: string): Map<string, any> {
+  static getTable(tableName: string): Map<string, Record<string, unknown>> {
     if (!this.store.has(tableName)) {
       this.createTable(tableName);
     }
     return this.store.get(tableName)!;
   }
 
-  static async saveItem(tableName: string, item: any): Promise<void> {
+  static async saveItem(tableName: string, item: Record<string, unknown>): Promise<void> {
     const table = this.getTable(tableName);
-    table.set(item.id, item);
+    const id = item.id as string;
+    table.set(id, item);
   }
 
-  static async getItem(tableName: string, id: string): Promise<any | null> {
+  static async getItem(tableName: string, id: string): Promise<Record<string, unknown> | null> {
     const table = this.getTable(tableName);
     return table.get(id) || null;
   }
 
-  static async queryByEmail(tableName: string, email: string): Promise<any | null> {
+  static async queryByEmail(
+    tableName: string,
+    email: string
+  ): Promise<Record<string, unknown> | null> {
     const table = this.getTable(tableName);
     for (const item of table.values()) {
       if (item.email === email) {
@@ -43,7 +47,7 @@ export class TestDatabaseHelper {
     table.clear();
   }
 
-  static async getAllItems(tableName: string): Promise<any[]> {
+  static async getAllItems(tableName: string): Promise<Record<string, unknown>[]> {
     const table = this.getTable(tableName);
     return Array.from(table.values());
   }

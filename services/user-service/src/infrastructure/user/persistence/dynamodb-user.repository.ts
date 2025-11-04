@@ -8,6 +8,15 @@ import { Email } from '../../../domain/user/value-objects/email.vo';
 import { UserId } from '../../../domain/user/value-objects/user-id.vo';
 import { DYNAMODB_CLIENT } from '../../database/database.module';
 
+interface UserDbRecord {
+  id: string;
+  email: string;
+  hashedPassword: string;
+  name: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 @Injectable()
 export class DynamoDBUserRepository extends UserRepository {
   private readonly tableName: string;
@@ -45,7 +54,7 @@ export class DynamoDBUserRepository extends UserRepository {
       return null;
     }
 
-    return User.toDomain(result.Items[0] as any);
+    return User.toDomain(result.Items[0] as UserDbRecord);
   }
 
   async findById(id: UserId): Promise<User | null> {
@@ -60,6 +69,6 @@ export class DynamoDBUserRepository extends UserRepository {
       return null;
     }
 
-    return User.toDomain(result.Item as any);
+    return User.toDomain(result.Item as UserDbRecord);
   }
 }
