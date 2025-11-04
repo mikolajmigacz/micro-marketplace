@@ -1,10 +1,17 @@
-import { Controller, Post, Body, Get, Headers, UnauthorizedException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Headers,
+  UnauthorizedException,
+  Inject,
+} from '@nestjs/common';
 import { RegisterUserUseCase } from '../../../application/user/use-cases/register-user.use-case';
 import { LoginUserUseCase } from '../../../application/user/use-cases/login-user.use-case';
 import { RegisterUserDto } from '../../../application/user/dto/register-user.dto';
 import { LoginUserDto } from '../../../application/user/dto/login-user.dto';
 import { AuthResponseDto } from '../../../application/user/dto/user-response.dto';
-import { Inject } from '@nestjs/common';
 import { IJwtService, JWT_SERVICE } from '../../../domain/user/services/jwt.service.interface';
 
 @Controller('auth')
@@ -41,7 +48,7 @@ export class AuthController {
         userId: payload.sub,
         email: payload.email,
       };
-    } catch (error) {
+    } catch {
       throw new UnauthorizedException('Invalid token');
     }
   }

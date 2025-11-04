@@ -14,10 +14,6 @@ import { IJwtService, JWT_SERVICE } from '../../../domain/user/services/jwt.serv
 import { RegisterUserDto } from '../dto/register-user.dto';
 import { AuthResponseDto, UserResponseDto } from '../dto/user-response.dto';
 
-/**
- * Register User Use Case
- * Application layer - orchestrates the user registration flow
- */
 @Injectable()
 export class RegisterUserUseCase {
   constructor(

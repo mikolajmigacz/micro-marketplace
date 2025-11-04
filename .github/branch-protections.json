@@ -1,0 +1,15 @@
+{
+  "branches": [
+    {
+      "name": "main",
+      "protection": {
+        "required_status_checks": {
+          "strict": true,
+          "contexts": ["build-and-test"]
+        },
+        "enforce_admins": true,
+        "restrictions": null
+      }
+    }
+  ]
+}
